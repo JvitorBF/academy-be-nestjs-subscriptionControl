@@ -1,0 +1,43 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Cliente {
+  codigo Int @id @default(autoincrement())
+  nome String
+  email String @unique
+  assinaturas Assinatura[]
+}
+
+model Aplicativo {
+  codigo Int @id @default(autoincrement())
+  nome String
+  custoMensal Float
+  assinaturas Assinatura[]
+}
+
+model Assinatura {
+  codigo Int @id @default(autoincrement())
+  codApp Int
+  codCli Int
+  inicioVigencia DateTime
+  fimVigencia DateTime
+
+  aplicativo Aplicativo @relation(fields: [codApp], references: [codigo])
+  cliente Cliente @relation(fields: [codCli], references: [codigo])
+  pagamentos Pagamento[]
+}
+
+model Pagamento {
+  codigo Int @id @default(autoincrement())
+  codAssinatura Int
+  valorPago Float
+  dataPagamento DateTime
+
+  assinatura Assinatura @relation(fields: [codAssinatura], references: [codigo])
+}
