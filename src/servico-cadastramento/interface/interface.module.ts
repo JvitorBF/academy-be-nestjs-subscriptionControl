@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
-import { ClienteController } from './controllers/cliente.controller';
 import { AplicativoController } from './controllers/aplicativo.controller';
+import { ApplicationModule } from '../application/application.module';
 
 @Module({
-  controllers: [ClienteController, AplicativoController]
+  imports: [ApplicationModule],
+  controllers: [AplicativoController]
 })
 export class InterfaceModule {}
