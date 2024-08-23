@@ -11,6 +11,13 @@ import { ClienteRepository } from '../infrastructure/repositories/cliente.reposi
 import { ListarClientesUseCase } from './use-cases/cliente-use-case/listar-clientes.use-case';
 import { CriarClientesUseCase } from './use-cases/cliente-use-case/criar-clientes.use-case';
 import { DeletarClientesUseCase } from './use-cases/cliente-use-case/deletar-clientes.use-case';
+import { AssinaturaService } from './service/assinatura.service';
+import { AssinaturaRepository } from '../infrastructure/repositories/assinatura.repository';
+import { ListarAppAssinaturasUseCase } from './use-cases/assinatura-use-case/listarApp-assinaturas.use-case';
+import { ListarCliAssinaturasUseCase } from './use-cases/assinatura-use-case/listarCli-assinaturas.use-case';
+import { ListarTipoAssinaturasUseCase } from './use-cases/assinatura-use-case/listarTipo-assinaturas.use-case';
+import { CriarAssinaturasUseCase } from './use-cases/assinatura-use-case/criar-assinaturas.use-case';
+import { DeletarAssinaturasUseCase } from './use-cases/assinatura-use-case/deletar-assinaturas.use-case';
 
 @Module({
   imports: [InfrastructureModule],
@@ -22,10 +29,17 @@ import { DeletarClientesUseCase } from './use-cases/cliente-use-case/deletar-cli
     ListarClientesUseCase,
     CriarClientesUseCase,
     DeletarClientesUseCase,
+    CriarAssinaturasUseCase,
+    ListarAppAssinaturasUseCase,
+    ListarTipoAssinaturasUseCase,
+    ListarCliAssinaturasUseCase,
+    DeletarAssinaturasUseCase,
     AplicativoService,
-    AplicativoRepository,
     ClienteService,
+    AssinaturaService,
+    AplicativoRepository,
     ClienteRepository,
+    AssinaturaRepository,
     {
       provide: 'AplicativoServiceInterface',
       useClass: AplicativoService,
@@ -42,6 +56,15 @@ import { DeletarClientesUseCase } from './use-cases/cliente-use-case/deletar-cli
       provide: 'ClienteRepositoryInterface',
       useExisting: ClienteRepository,
     },
+    {
+      provide: 'AssinaturaRepositoryInterface',
+      useExisting: AssinaturaRepository,
+    },
+    {
+      provide: 'AssinaturaServiceInterface',
+      useExisting: AssinaturaService,
+    },
+    AssinaturaService,
   ],
   exports: [
     CriarAplicativosUseCase,
@@ -51,10 +74,17 @@ import { DeletarClientesUseCase } from './use-cases/cliente-use-case/deletar-cli
     ListarClientesUseCase,
     CriarClientesUseCase,
     DeletarClientesUseCase,
+    CriarAssinaturasUseCase,
+    DeletarAssinaturasUseCase,
+    ListarAppAssinaturasUseCase,
+    ListarCliAssinaturasUseCase,
+    ListarTipoAssinaturasUseCase,
     AplicativoService,
     ClienteService,
+    AssinaturaService,
     'AplicativoServiceInterface',
     'ClienteServiceInterface',
+    'AssinaturaServiceInterface',
   ],
 })
 export class ApplicationModule {}
