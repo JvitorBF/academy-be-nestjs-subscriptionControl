@@ -14,7 +14,7 @@ import { PatchAplicativosUseCase } from '../../application/use-cases/aplicativo-
 import { Aplicativo } from '@prisma/client';
 import { CreateAplitivoDTO, PatchAplicativoDTO } from '../dtos/aplicativo.dto';
 import { DeletarAplicativosUseCase } from 'src/servico-cadastramento/application/use-cases/aplicativo-use-case/deletar-aplicativos.use-case';
-@Controller('aplicativos')
+@Controller('servcad')
 export class AplicativoController {
   constructor(
     private readonly criarAplicativosUseCase: CriarAplicativosUseCase,
@@ -24,18 +24,18 @@ export class AplicativoController {
   ) {}
 
   /* Endpoint (FASE 1): GET /servcad/aplicativos */ 
-  @Get()
+  @Get('aplicativos')
   async getAll(): Promise<Aplicativo[]> {
     return this.listarAplicativosUseCase.execute();
   }
 
-  @Post()
+  @Post('aplicativos')
   async create(@Body() body: CreateAplitivoDTO): Promise<CreateAplitivoDTO> {
     return this.criarAplicativosUseCase.execute(body);
   }
 
   /* Endpoint (FASE 1): PATCH /servcad/aplicativos/:idAplicativo */
-  @Patch(':codigo')
+  @Patch('aplicativos/:codigo')
   async patch(
     @Param('codigo') codigo: string,
     @Body() body: PatchAplicativoDTO,
@@ -47,7 +47,7 @@ export class AplicativoController {
     return this.patchAplicativosUseCase.execute(codigoInt, body);
   }
 
-  @Delete(':codigo')
+  @Delete('aplicativos/:codigo')
   async delete(@Param('codigo') codigo: string): Promise<Aplicativo> {
     const codigoInt = parseInt(codigo, 10);
     if (isNaN(codigoInt)) {

@@ -13,7 +13,7 @@ import { DeletarClientesUseCase } from 'src/servico-cadastramento/application/us
 import { ListarClientesUseCase } from 'src/servico-cadastramento/application/use-cases/cliente-use-case/listar-clientes.use-case';
 import { CreateClienteDTO } from '../dtos/cliente.dto';
 
-@Controller('clientes')
+@Controller('servcad')
 export class ClienteController {
   constructor(
     private readonly criarClienteUseCase: CriarClientesUseCase,
@@ -21,17 +21,17 @@ export class ClienteController {
     private readonly deletarClienteUseCase: DeletarClientesUseCase,
   ) {}
 
-  @Get()
+  @Get('clientes')
   async getAll(): Promise<Cliente[]> {
     return this.listarClienteUseCase.execute();
   }
 
-  @Post()
+  @Post('clientes')
   async create(@Body() body: CreateClienteDTO): Promise<CreateClienteDTO> {
     return this.criarClienteUseCase.execute(body);
   }
 
-  @Delete(':codigo')
+  @Delete('clientes/:codigo')
   async delete(@Param('codigo') codigo: string): Promise<Cliente> {
     const codigoInt = parseInt(codigo, 10);
     if (isNaN(codigoInt)) {
