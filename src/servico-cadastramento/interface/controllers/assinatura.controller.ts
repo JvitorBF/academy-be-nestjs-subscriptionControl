@@ -78,7 +78,7 @@ export class AssinaturaController {
 
   @Post('assinaturas')
   async create(
-    @Body(new ValidationPipe({ transform: true, whitelist: true }))
+    @Body(new ValidationPipe({ whitelist: true }))
     body: CreateAssinaturaDTO,
   ): Promise<CreateAssinaturaDTO> {
     // Converter as strings para Date
