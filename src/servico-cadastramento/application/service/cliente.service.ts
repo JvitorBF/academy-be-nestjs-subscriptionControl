@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Cliente } from '@prisma/client';
 import { ClienteRepositoryInterface } from 'src/servico-cadastramento/domain/interfaces/repository/cliente.repository.interface';
 import { ClienteServiceInterface } from 'src/servico-cadastramento/domain/interfaces/service/cliente.service.interface';
+import { CreateClienteDTO } from 'src/servico-cadastramento/interface/dtos/cliente.dto';
 
 @Injectable()
 export class ClienteService implements ClienteServiceInterface {
@@ -10,9 +11,8 @@ export class ClienteService implements ClienteServiceInterface {
     private readonly clienteRepository: ClienteRepositoryInterface,
   ) {}
 
-  async create(nome: string, email: string): Promise<Cliente> {
-    const cliente: Cliente = { codigo: undefined, nome: nome, email: email };
-    return this.clienteRepository.create(cliente);
+  async create(dto: CreateClienteDTO): Promise<Cliente> {
+    return this.clienteRepository.create(dto);
   }
 
   async findAll(): Promise<Cliente[]> {

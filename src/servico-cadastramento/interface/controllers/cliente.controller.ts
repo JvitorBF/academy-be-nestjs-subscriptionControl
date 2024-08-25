@@ -1,11 +1,12 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
+  ValidationPipe,
 } from '@nestjs/common';
 import { Cliente } from '@prisma/client';
 import { CriarClientesUseCase } from 'src/servico-cadastramento/application/use-cases/cliente-use-case/criar-clientes.use-case';
@@ -27,16 +28,16 @@ export class ClienteController {
   }
 
   @Post('clientes')
-  async create(@Body() body: CreateClienteDTO): Promise<CreateClienteDTO> {
+  async create(
+    @Body(new ValidationPipe({ whitelist: true })) body: CreateClienteDTO,
+  ): Promise<CreateClienteDTO> {
     return this.criarClienteUseCase.execute(body);
   }
 
   @Delete('clientes/:codigo')
-  async delete(@Param('codigo') codigo: string): Promise<Cliente> {
-    const codigoInt = parseInt(codigo, 10);
-    if (isNaN(codigoInt)) {
-      throw new BadRequestException('Invalid code');
-    }
-    return this.deletarClienteUseCase.execute(codigoInt);
+  async delete(
+    @Param('codigo', ParseIntPipe) codigo: number,
+  ): Promise<Cliente> {
+    return this.deletarClienteUseCase.execute(codigo);
   }
 }

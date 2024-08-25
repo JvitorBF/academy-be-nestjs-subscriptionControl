@@ -11,6 +11,6 @@ export class CriarClientesUseCase {
   ) {}
 
   async execute(dto: CreateClienteDTO): Promise<Cliente> {
-    return this.clienteService.create(dto.nome, dto.email);
+    return this.clienteService.create(dto);
   }
 }
