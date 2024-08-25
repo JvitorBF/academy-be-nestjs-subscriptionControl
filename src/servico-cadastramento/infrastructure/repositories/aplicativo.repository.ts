@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AplicativoRepositoryInterface } from '../../domain/interfaces/repository/aplicativo.repository.interface';
 import { Aplicativo } from '@prisma/client';
 import { PrismaService } from '../database/prisma/prisma.service';
+import { CreateAplicativoDTO, PatchAplicativoDTO } from 'src/servico-cadastramento/interface/dtos/aplicativo.dto';
 @Injectable()
 export class AplicativoRepository implements AplicativoRepositoryInterface {
   constructor(private prisma: PrismaService) {}
@@ -14,7 +15,7 @@ export class AplicativoRepository implements AplicativoRepositoryInterface {
     });
   }
 
-  async create(aplicativo: Aplicativo): Promise<Aplicativo> {
+  async create(aplicativo: CreateAplicativoDTO): Promise<Aplicativo> {
     return this.prisma.aplicativo.create({
       data: aplicativo,
     });
@@ -30,10 +31,10 @@ export class AplicativoRepository implements AplicativoRepositoryInterface {
     return this.prisma.aplicativo.findMany();
   }
 
-  async patch(codigo: number, custoMensal: number): Promise<Aplicativo | null> {
+  async patch(codigo: number, dto: PatchAplicativoDTO): Promise<Aplicativo | null> {
     return this.prisma.aplicativo.update({
       where: { codigo },
-      data: { custoMensal },
+      data: { ...dto },
     });
   }
 }

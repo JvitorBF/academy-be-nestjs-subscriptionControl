@@ -1,18 +1,19 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CriarAplicativosUseCase } from '../../application/use-cases/aplicativo-use-case/criar-aplicativos.use-case';
 import { ListarAplicativosUseCase } from '../../application/use-cases/aplicativo-use-case/listar-aplicativos.use-case';
 import { PatchAplicativosUseCase } from '../../application/use-cases/aplicativo-use-case/patch-aplicativos.use-case';
 import { Aplicativo } from '@prisma/client';
-import { CreateAplitivoDTO, PatchAplicativoDTO } from '../dtos/aplicativo.dto';
+import { CreateAplicativoDTO, PatchAplicativoDTO } from '../dtos/aplicativo.dto';
 import { DeletarAplicativosUseCase } from 'src/servico-cadastramento/application/use-cases/aplicativo-use-case/deletar-aplicativos.use-case';
 @Controller('servcad')
 export class AplicativoController {
@@ -23,36 +24,30 @@ export class AplicativoController {
     private readonly deletarAplicativoUseCase: DeletarAplicativosUseCase,
   ) {}
 
-  /* Endpoint (FASE 1): GET /servcad/aplicativos */ 
   @Get('aplicativos')
   async getAll(): Promise<Aplicativo[]> {
     return this.listarAplicativosUseCase.execute();
   }
 
   @Post('aplicativos')
-  async create(@Body() body: CreateAplitivoDTO): Promise<CreateAplitivoDTO> {
+  async create(
+    @Body(new ValidationPipe({ whitelist: true })) body: CreateAplicativoDTO,
+  ): Promise<CreateAplicativoDTO> {
     return this.criarAplicativosUseCase.execute(body);
   }
 
-  /* Endpoint (FASE 1): PATCH /servcad/aplicativos/:idAplicativo */
   @Patch('aplicativos/:codigo')
   async patch(
-    @Param('codigo') codigo: string,
-    @Body() body: PatchAplicativoDTO,
+    @Param('codigo', ParseIntPipe) codigo: number,
+    @Body(new ValidationPipe({ whitelist: true })) body: PatchAplicativoDTO,
   ): Promise<PatchAplicativoDTO> {
-    const codigoInt = parseInt(codigo, 10);
-    if (isNaN(codigoInt)) {
-      throw new BadRequestException('Invalid code');
-    }
-    return this.patchAplicativosUseCase.execute(codigoInt, body);
+    return this.patchAplicativosUseCase.execute(codigo, body);
   }
 
   @Delete('aplicativos/:codigo')
-  async delete(@Param('codigo') codigo: string): Promise<Aplicativo> {
-    const codigoInt = parseInt(codigo, 10);
-    if (isNaN(codigoInt)) {
-      throw new BadRequestException('Invalid code');
-    }
-    return this.deletarAplicativoUseCase.execute(codigoInt);
+  async delete(
+    @Param('codigo', ParseIntPipe) codigo: number,
+  ): Promise<Aplicativo> {
+    return this.deletarAplicativoUseCase.execute(codigo);
   }
 }

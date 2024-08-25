@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { AplicativoServiceInterface } from '../../domain/interfaces/service/aplicativo.service.interface';
 import { Aplicativo } from '@prisma/client';
 import { AplicativoRepositoryInterface } from 'src/servico-cadastramento/domain/interfaces/repository/aplicativo.repository.interface';
+import { CreateAplicativoDTO, PatchAplicativoDTO } from 'src/servico-cadastramento/interface/dtos/aplicativo.dto';
 
 @Injectable()
 export class AplicativoService implements AplicativoServiceInterface {
@@ -14,9 +15,8 @@ export class AplicativoService implements AplicativoServiceInterface {
     return this.aplicativoRepository.delete(codigo);
   }
 
-  async create(nome: string, custoMensal: number): Promise<Aplicativo> {
-    const aplicativo: Aplicativo = { codigo: undefined, nome, custoMensal };
-    return this.aplicativoRepository.create(aplicativo);
+  async create(dto: CreateAplicativoDTO): Promise<Aplicativo> {
+    return this.aplicativoRepository.create(dto);
   }
 
   async findById(codigo: number): Promise<Aplicativo | null> {
@@ -27,7 +27,7 @@ export class AplicativoService implements AplicativoServiceInterface {
     return this.aplicativoRepository.findAll();
   }
 
-  async patch(codigo: number, custoMensal: number): Promise<Aplicativo | null> {
-    return this.aplicativoRepository.patch(codigo, custoMensal);
+  async patch(codigo: number, dto: PatchAplicativoDTO): Promise<Aplicativo | null> {
+    return this.aplicativoRepository.patch(codigo, dto);
   }
 }

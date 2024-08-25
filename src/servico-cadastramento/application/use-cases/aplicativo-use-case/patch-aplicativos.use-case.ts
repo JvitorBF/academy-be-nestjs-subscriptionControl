@@ -14,6 +14,6 @@ export class PatchAplicativosUseCase {
     codigo: number,
     dto: PatchAplicativoDTO,
   ): Promise<Aplicativo | null> {
-    return this.aplicativoService.patch(codigo, dto.custoMensal);
+    return this.aplicativoService.patch(codigo, dto);
   }
 }

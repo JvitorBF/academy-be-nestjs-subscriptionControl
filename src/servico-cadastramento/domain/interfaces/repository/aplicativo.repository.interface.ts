@@ -1,9 +1,10 @@
 import { Aplicativo } from '@prisma/client';
+import { CreateAplicativoDTO, PatchAplicativoDTO } from 'src/servico-cadastramento/interface/dtos/aplicativo.dto';
 
 export interface AplicativoRepositoryInterface {
-  create(aplicativo: Aplicativo): Promise<Aplicativo>;
+  create(aplicativo: CreateAplicativoDTO): Promise<Aplicativo>;
   findById(codigo: number): Promise<Aplicativo | null>;
   findAll(): Promise<Aplicativo[]>;
   delete(codigo: number): Promise<Aplicativo>;
-  patch(codigo: number, custoMensal: number): Promise<Aplicativo | null>;
+  patch(codigo: number, dto: PatchAplicativoDTO): Promise<Aplicativo | null>;
 }
