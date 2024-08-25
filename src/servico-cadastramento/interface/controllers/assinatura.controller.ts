@@ -1,11 +1,12 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CriarAssinaturasUseCase } from 'src/servico-cadastramento/application/use-cases/assinatura-use-case/criar-assinaturas.use-case';
 import { DeletarAssinaturasUseCase } from 'src/servico-cadastramento/application/use-cases/assinatura-use-case/deletar-assinaturas.use-case';
@@ -43,14 +44,10 @@ export class AssinaturaController {
 
   @Get('asscli/:codcli')
   async getAssinaturasByCliente(
-    @Param('codcli') codcli: string,
+    @Param('codcli', ParseIntPipe) codcli: number,
   ): Promise<Assinatura[]> {
-    const codCliInt = parseInt(codcli);
-    if (isNaN(codCliInt)) {
-      throw new BadRequestException('O Código deve ser um número.');
-    }
     const assinaturas: Assinatura[] =
-      await this.listarCliAssinaturasUseCase.execute(codCliInt);
+      await this.listarCliAssinaturasUseCase.execute(codcli);
 
     return assinaturas.map((assinatura) => ({
       codigo: assinatura.codigo,
@@ -64,14 +61,10 @@ export class AssinaturaController {
 
   @Get('assapp/:codapp')
   async getAssinaturasByAplicativo(
-    @Param('codapp') codapp: string,
+    @Param('codapp', ParseIntPipe) codapp: number,
   ): Promise<Assinatura[]> {
-    const codAppInt = parseInt(codapp);
-    if (isNaN(codAppInt)) {
-      throw new BadRequestException('O Código deve ser um número.');
-    }
     const assinaturas: Assinatura[] =
-      await this.listarAppAssinaturasUseCase.execute(codAppInt);
+      await this.listarAppAssinaturasUseCase.execute(codapp);
 
     return assinaturas.map((assinatura) => ({
       codigo: assinatura.codigo,
@@ -85,35 +78,26 @@ export class AssinaturaController {
 
   @Post('assinaturas')
   async create(
-    @Body() body: CreateAssinaturaDTO,
+    @Body(new ValidationPipe({ transform: true, whitelist: true }))
+    body: CreateAssinaturaDTO,
   ): Promise<CreateAssinaturaDTO> {
-    const inicioVigenciaDate = new Date(body.inicioVigencia);
-    const fimVigenciaDate = new Date(body.fimVigencia);
+    // Converter as strings para Date
+    const inicioVigencia = new Date(body.inicioVigencia);
+    const fimVigencia = new Date(body.fimVigencia);
 
-    if (
-      isNaN(inicioVigenciaDate.getTime()) ||
-      isNaN(fimVigenciaDate.getTime())
-    ) {
-      throw new BadRequestException(
-        'Formato de data inválido. As datas devem estar no formato ISO (YYYY-MM-DD).',
-      );
-    }
-
-    const assinaturaDto: CreateAssinaturaDTO = {
+    // Criar um novo DTO com as datas convertidas
+    const dto: CreateAssinaturaDTO = {
       ...body,
-      inicioVigencia: inicioVigenciaDate,
-      fimVigencia: fimVigenciaDate,
+      inicioVigencia,
+      fimVigencia,
     };
-
-    return this.criarAssinaturasUseCase.execute(assinaturaDto);
+    return this.criarAssinaturasUseCase.execute(dto);
   }
 
   @Delete('assinaturas/:codigo')
-  async delete(@Param('codigo') codigo: string): Promise<Assinatura> {
-    const codigoInt = parseInt(codigo);
-    if (isNaN(codigoInt)) {
-      throw new BadRequestException('O Código deve ser um número.');
-    }
-    return this.deletarAssinaturasUseCase.execute(codigoInt);
+  async delete(
+    @Param('codigo', ParseIntPipe) codigo: number,
+  ): Promise<Assinatura> {
+    return this.deletarAssinaturasUseCase.execute(codigo);
   }
 }

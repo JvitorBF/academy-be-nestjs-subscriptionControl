@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Assinatura } from '@prisma/client';
 import { AssinaturaRepositoryInterface } from 'src/servico-cadastramento/domain/interfaces/repository/assinatura.repository.interface';
 import { AssinaturaServiceInterface } from 'src/servico-cadastramento/domain/interfaces/service/assinatura.service.interface';
+import { CreateAssinaturaDTO } from 'src/servico-cadastramento/interface/dtos/assinatura.dto';
 
 @Injectable()
 export class AssinaturaService implements AssinaturaServiceInterface {
@@ -10,20 +11,8 @@ export class AssinaturaService implements AssinaturaServiceInterface {
     private readonly assinaturaRepository: AssinaturaRepositoryInterface,
   ) {}
 
-  async create(
-    codApp: number,
-    codCli: number,
-    inicioVigencia: Date,
-    fimVigencia: Date,
-  ): Promise<Assinatura> {
-    const assinatura: Assinatura = {
-      codigo: undefined,
-      codApp: codApp,
-      codCli: codCli,
-      inicioVigencia: inicioVigencia,
-      fimVigencia: fimVigencia,
-    };
-    return this.assinaturaRepository.create(assinatura);
+  async create(dto: CreateAssinaturaDTO): Promise<Assinatura> {
+    return this.assinaturaRepository.create(dto);
   }
 
   async findByCli(codCli: number): Promise<Assinatura[]> {
@@ -34,7 +23,6 @@ export class AssinaturaService implements AssinaturaServiceInterface {
     return this.assinaturaRepository.findByAplicativo(codApp);
   }
 
-  // TODO fazer essa droga aqui!
   async findByType(tipo: string): Promise<Assinatura[]> {
     let assinaturas = await this.assinaturaRepository.findAll();
     let dataAtual = new Date();
@@ -44,9 +32,13 @@ export class AssinaturaService implements AssinaturaServiceInterface {
       case 'TODAS':
         return assinaturas;
       case 'ATIVAS':
-        return assinaturas.filter(assinatura => assinatura.fimVigencia > dataAtual)
+        return assinaturas.filter(
+          (assinatura) => assinatura.fimVigencia > dataAtual,
+        );
       case 'CANCELADAS':
-        return assinaturas.filter(assinatura => assinatura.fimVigencia <= dataAtual)
+        return assinaturas.filter(
+          (assinatura) => assinatura.fimVigencia <= dataAtual,
+        );
       default:
         throw new Error('Tipo de assinatura inválido');
     }

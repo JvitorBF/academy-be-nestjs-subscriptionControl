@@ -1,12 +1,8 @@
 import { Assinatura } from '@prisma/client';
+import { CreateAssinaturaDTO } from 'src/servico-cadastramento/interface/dtos/assinatura.dto';
 
 export interface AssinaturaServiceInterface {
-  create(
-    codApp: number,
-    codCli: number,
-    inicioVigencia: Date,
-    fimVigencia: Date,
-  ): Promise<Assinatura>;
+  create(dto: CreateAssinaturaDTO): Promise<Assinatura>;
 
   findByType(tipo: string): Promise<Assinatura[]>;
 

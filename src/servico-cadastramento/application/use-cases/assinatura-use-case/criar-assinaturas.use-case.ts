@@ -11,11 +11,6 @@ export class CriarAssinaturasUseCase {
   ) {}
 
   async execute(dto: CreateAssinaturaDTO): Promise<Assinatura> {
-    return this.assinaturaService.create(
-      dto.codApp,
-      dto.codCli,
-      dto.inicioVigencia,
-      dto.fimVigencia,
-    );
+    return this.assinaturaService.create(dto);
   }
 }
