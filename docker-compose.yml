@@ -1,0 +1,35 @@
+services:
+  app:
+    container_name: app-nestjs
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      RABBITMQ_URL: ${RABBITMQ_URL}
+    depends_on:
+      - redis
+      - rabbitmq
+    command: npm run start
+
+  redis:
+    image: 'redis:alpine'
+    container_name: redis
+    ports:
+      - '6379:6379'
+
+  rabbitmq:
+    image: 'rabbitmq:3-management'
+    container_name: rabbitmq
+    ports:
+      - '5672:5672'
+      - '15672:15672'
