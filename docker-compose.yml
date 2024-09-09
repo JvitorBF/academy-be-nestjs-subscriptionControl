@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - .:/usr/src/app
+      - .:/usr/src/app:delegated
       - /usr/src/app/node_modules
     ports:
       - '3000:3000'
@@ -19,7 +19,7 @@ services:
     depends_on:
       - redis
       - rabbitmq
-    command: npm run start
+    command: npm run start:dev
 
   redis:
     image: 'redis:alpine'
@@ -30,6 +30,9 @@ services:
   rabbitmq:
     image: 'rabbitmq:3-management'
     container_name: rabbitmq
+    hostname: rabbitmq
     ports:
       - '5672:5672'
       - '15672:15672'
+    env_file:
+      - .env
