@@ -7,6 +7,18 @@ declare const module: any;
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Configuração do microserviço para múltiplas filas
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: {
+      urls: [process.env.RABBITMQ_URL],
+      queue: 'assinaturas_queue', // Filas padrão
+      queueOptions: {
+        durable: true,
+      },
+    },
+  });
+
   // Inicializa o microserviço RabbitMQ
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,

@@ -23,14 +23,12 @@ export class CriarPagamentosUseCase {
       await lastValueFrom(
         this.messageBroker.emitirEvento('PagamentoServicoCadastramento', dto),
       );
-
-      // Implementar os eventos de assinatura
-      /* await lastValueFrom(
+      await lastValueFrom(
         this.messageBroker.emitirEvento(
           'PagamentoServicoAssinaturaValida',
           dto,
         ),
-      ); */
+      );
     } catch (error) {
       // Lida com qualquer erro que possa ocorrer durante a emissão dos eventos
       console.error('Erro ao emitir eventos:', error);
